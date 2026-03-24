@@ -1,54 +1,136 @@
-# 🚀 NoverFly Documentation
+# NoverFly API Documentation
 
-**Build, sell, and manage your digital business — all in one cloud.**
+> **Official developer documentation for the [NoverFly](https://noverfly.com) platform API.**
+> Build websites, sell products, manage content, and integrate AI — all through one REST API.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Website](https://img.shields.io/badge/Website-noverfly.com-brightgreen)](https://noverfly.com)
-[![API Status](https://img.shields.io/badge/API-api.noverfly.com-orange)](https://api.noverfly.com)
+[![API Base URL](https://img.shields.io/badge/API-api.noverfly.com%2Fv1-orange)](https://api.noverfly.com/v1)
+[![OpenAPI](https://img.shields.io/badge/OpenAPI-3.0-6BA539?logo=openapi-initiative)](openapi.yaml)
+[![Help Center](https://img.shields.io/badge/Help-help.noverfly.com-lightblue)](https://help.noverfly.com)
 
 ---
 
-## 🌍 What is NoverFly?
+## What is NoverFly?
 
-NoverFly is an all-in-one SaaS platform that allows you to:
+**NoverFly** is an all-in-one **SaaS website builder** and **e-commerce platform** — like Webflow + Shopify + Firebase combined. NoverFly provides a REST API for developers to programmatically manage every aspect of the platform:
 
-- 🎨 **Design websites** with GlowDesign Lite — a powerful drag-and-drop visual editor
-- 🧩 **Manage data and CMS** — dynamic content, collections, and structured data
-- 🛒 **Sell products online** — full e-commerce with cart, checkout, and payments
-- 🤖 **Use AI tools** — AI-powered content generation, design assistance, and more
-- 🌐 **Deploy instantly** — one-click publish to production with custom domains
-- 📊 **Analytics & Insights** — track visitors, conversions, and performance
-- 👥 **Multi-tenant organizations** — collaborate with teams across multiple projects
+- **Website Builder API** — Create and manage sites, pages, and designs
+- **CMS API** — Collections, entries, dynamic content
+- **E-Commerce API** — Products, cart, checkout, orders, payments (Stripe & PayPal)
+- **Authentication API** — JWT, OAuth 2.0 (Google), API keys, multi-tenant
+- **AI API** — Content generation, design assistance, image generation
+- **Analytics API** — Page views, visitors, conversions
+- **Asset API** — File uploads, media management (S3 storage)
+- **Deployment API** — Publish sites, custom domains, SSL
 
----
+**API Base URL:** `https://api.noverfly.com/v1`
 
-## ⚡ Quick Start
+NoverFly is built for:
 
-1. **Create an account** → [noverfly.com](https://noverfly.com)
-2. **Create your first site** → Choose a template or start blank
-3. **Open GlowDesign editor** → Visual drag-and-drop builder
-4. **Design your pages** → Components, styles, responsive layouts
-5. **Click Publish** → Your site is live on the internet
+- **Creators & freelancers** — Build client sites fast with GlowDesign visual editor
+- **Businesses** — Launch online stores with built-in e-commerce and payments
+- **Developers** — Integrate via REST API, webhooks, and API keys
+- **Agencies** — Manage multiple client projects with multi-tenant organizations
+- **SaaS builders** — White-label websites and storefronts
 
----
+### Keywords
 
-## 📚 Documentation
-
-| Topic | Description |
-|-------|-------------|
-| [Introduction](docs/introduction.md) | Overview of the NoverFly platform |
-| [Getting Started](docs/getting-started.md) | Create your first project step by step |
-| [Authentication](docs/authentication.md) | JWT, OAuth, sessions, and security |
-| [GlowDesign Editor](docs/glowdesign.md) | Visual editor, components, and design system |
-| [CMS & Database](docs/cms.md) | Dynamic content, collections, and data management |
-| [E-commerce](docs/ecommerce.md) | Products, orders, checkout, and payments |
-| [API Reference](docs/api.md) | REST API endpoints, rate limits, and usage |
-| [Deployment](docs/deployment.md) | Publishing, custom domains, and hosting |
-| [Security](docs/security.md) | Data protection, encryption, and compliance |
+`NoverFly` · `NoverFly API` · `website builder API` · `SaaS platform` · `e-commerce API` · `GlowDesign` · `CMS API` · `Gloowflix Cloud` · `drag-and-drop website builder` · `headless CMS` · `REST API` · `multi-tenant SaaS`
 
 ---
 
-## 🔐 Authentication
+## Quick Start — API Usage
+
+### 1. Authenticate
+
+```bash
+curl -X POST https://api.noverfly.com/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email": "you@example.com", "password": "your-password"}'
+```
+
+### 2. Get Your Profile
+
+```bash
+curl https://api.noverfly.com/v1/auth/me \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+```
+
+### 3. List Your Sites
+
+```bash
+curl https://api.noverfly.com/v1/sites \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -H "X-Tenant-Id: YOUR_TENANT_ID"
+```
+
+### 4. Create a CMS Entry
+
+```bash
+curl -X POST https://api.noverfly.com/v1/cms/blog-posts/entries \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -H "X-Tenant-Id: YOUR_TENANT_ID" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "fields": {
+      "title": "Hello World",
+      "slug": "hello-world",
+      "body": "<p>My first post on NoverFly!</p>",
+      "published": true
+    }
+  }'
+```
+
+### 5. List Products (E-Commerce)
+
+```bash
+curl https://api.noverfly.com/v1/ecommerce/products \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -H "X-Tenant-Id: YOUR_TENANT_ID"
+```
+
+> Full interactive examples in the [API Reference](docs/api.md).
+
+---
+
+## Documentation Index
+
+| Document | Description |
+|----------|-------------|
+| [Introduction](docs/introduction.md) | Platform overview — what NoverFly is and how it works |
+| [Getting Started](docs/getting-started.md) | Step-by-step tutorial: sign up → create site → publish |
+| [Authentication](docs/authentication.md) | JWT tokens, Google OAuth, API keys, roles, multi-tenant auth |
+| [GlowDesign Editor](docs/glowdesign.md) | Visual drag-and-drop editor, components, responsive design |
+| [CMS & Database](docs/cms.md) | Collections, custom fields, entries, CMS API, webhooks |
+| [E-Commerce](docs/ecommerce.md) | Products, variants, cart, checkout, orders, Stripe/PayPal |
+| [**API Reference**](docs/api.md) | **All REST API endpoints, rate limits, errors, pagination** |
+| [Deployment](docs/deployment.md) | Publishing, custom domains, SSL, CI/CD, rollbacks |
+| [Security](docs/security.md) | Encryption, GDPR, data isolation, responsible disclosure |
+| [OpenAPI Spec](openapi.yaml) | Machine-readable OpenAPI 3.0 specification |
+
+---
+
+## API Endpoints Overview
+
+Base URL: `https://api.noverfly.com/v1`
+
+| Category | Endpoints | Description |
+|----------|-----------|-------------|
+| **Auth** | `POST /auth/login` · `POST /auth/register` · `GET /auth/me` · `POST /auth/refresh` | Authentication, registration, JWT tokens |
+| **Organizations** | `GET /organizations` · `POST /organizations` · `POST /organizations/:id/members` | Multi-tenant team management |
+| **Sites** | `GET /sites` · `POST /sites` · `POST /sites/:id/publish` | Website creation and publishing |
+| **CMS** | `GET /cms/:collection/entries` · `POST /cms/:collection/entries` | Dynamic content management |
+| **E-Commerce** | `GET /ecommerce/products` · `POST /ecommerce/checkout` · `GET /ecommerce/orders` | Products, checkout, orders |
+| **Assets** | `POST /assets/upload` · `GET /assets` | File uploads and media |
+| **Analytics** | `GET /analytics/overview` · `GET /analytics/pageviews` | Traffic and performance |
+| **API Keys** | `POST /api-keys` · `GET /api-keys` | Programmatic access tokens |
+
+> See the complete [API Reference](docs/api.md) for request/response examples, error codes, and rate limits.
+
+---
+
+## Authentication
 
 NoverFly uses **JWT authentication** and supports:
 
@@ -59,7 +141,7 @@ NoverFly uses **JWT authentication** and supports:
 
 ---
 
-## 💰 Pricing & Plans
+## Pricing & Quotas
 
 | Plan | Price | Quota | Features |
 |------|-------|-------|----------|
@@ -72,7 +154,25 @@ NoverFly uses **JWT authentication** and supports:
 
 ---
 
-## 🏗️ Platform Architecture
+## Rate Limits
+
+| Plan | API Requests/min | API Requests/day | Bandwidth/month |
+|------|-----------------|-----------------|----------------|
+| Free | 60 | 1,000 | 1 GB |
+| Pro | 300 | 50,000 | 100 GB |
+| Business | 1,000 | 500,000 | 1 TB |
+| Enterprise | Custom | Custom | Unlimited |
+
+Rate limit headers are included in every API response:
+```
+X-RateLimit-Limit: 300
+X-RateLimit-Remaining: 295
+X-RateLimit-Reset: 1705312800
+```
+
+---
+
+## Platform Architecture
 
 ```
 ┌─────────────────────────────────────────────────────┐
@@ -92,31 +192,7 @@ NoverFly uses **JWT authentication** and supports:
 
 ---
 
-## 🧑‍💻 API Overview
-
-Base URL: `https://api.noverfly.com/v1`
-
-```bash
-# Authenticate
-curl -X POST https://api.noverfly.com/v1/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email": "user@example.com", "password": "yourpassword"}'
-
-# Get current user
-curl https://api.noverfly.com/v1/auth/me \
-  -H "Authorization: Bearer YOUR_TOKEN"
-
-# List sites
-curl https://api.noverfly.com/v1/sites \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -H "X-Tenant-Id: YOUR_TENANT_ID"
-```
-
-See the full [API Reference](docs/api.md) for all endpoints.
-
----
-
-## 🔑 Account System
+## Account System
 
 - **Users** — Individual accounts with email/password or Google OAuth
 - **Organizations (Tenants)** — Multi-tenant workspaces for team collaboration
@@ -126,18 +202,42 @@ See the full [API Reference](docs/api.md) for all endpoints.
 
 ---
 
-## 💡 Vision
+## OpenAPI / Swagger
 
-NoverFly combines the power of **Webflow**, **Shopify**, and **Firebase** into one unified platform — designed for creators, businesses, and developers who want to build, sell, and manage everything from a single dashboard.
+An [OpenAPI 3.0 specification](openapi.yaml) is included for machine-readable API documentation. You can:
+
+- Import into **Postman**, **Insomnia**, or **Swagger UI**
+- Generate client SDKs with **openapi-generator**
+- Use with any OpenAPI-compatible tool
+
+```bash
+# Preview with Swagger UI (Docker)
+docker run -p 8080:8080 -e SWAGGER_JSON=/spec/openapi.yaml -v $(pwd):/spec swaggerapi/swagger-ui
+```
 
 ---
 
-## 📞 Support
+## SDKs (Coming Soon)
 
-- 🌐 Help Center: [help.noverfly.com](https://help.noverfly.com)
-- 📧 Email: support@noverfly.com
-- 📖 Documentation: [docs.noverfly.com](https://docs.noverfly.com)
-- 🐛 Bug Reports: [GitHub Issues](https://github.com/gloowflix-hash/noverfly-docs/issues)
+| Language | Package | Status |
+|----------|---------|--------|
+| JavaScript / TypeScript | `npm install @noverfly/sdk` | 🔜 Coming soon |
+| Python | `pip install noverfly` | 🔜 Coming soon |
+| PHP | `composer require noverfly/sdk` | 🔜 Coming soon |
+
+---
+
+## Links
+
+| Resource | URL |
+|----------|-----|
+| **Website** | [noverfly.com](https://noverfly.com) |
+| **API** | [api.noverfly.com/v1](https://api.noverfly.com/v1) |
+| **Help Center** | [help.noverfly.com](https://help.noverfly.com) |
+| **Documentation** | [docs.noverfly.com](https://docs.noverfly.com) |
+| **Status** | [status.noverfly.com](https://status.noverfly.com) |
+| **Email Support** | support@noverfly.com |
+| **Bug Reports** | [GitHub Issues](https://github.com/gloowflix-hash/noverfly-docs/issues) |
 
 ---
 
@@ -145,5 +245,11 @@ NoverFly combines the power of **Webflow**, **Shopify**, and **Firebase** into o
 
 This documentation is licensed under the [MIT License](LICENSE).
 
-> **Note:** This repository contains documentation only.
-> The NoverFly platform source code is proprietary and owned by Gloowflix Cloud.
+> **Note:** This repository contains documentation only. The NoverFly platform source code is proprietary and owned by **Gloowflix Cloud**.
+
+---
+
+<p align="center">
+  <strong>NoverFly</strong> — Build, sell, and manage your digital business.<br>
+  Made with ❤️ by <a href="https://noverfly.com">Gloowflix Cloud</a>
+</p>

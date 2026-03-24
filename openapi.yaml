@@ -1,0 +1,1275 @@
+openapi: 3.0.3
+info:
+  title: NoverFly API
+  description: |
+    Official REST API for the **NoverFly** platform — an all-in-one SaaS website builder,
+    CMS, e-commerce, and AI-powered design platform by Gloowflix Cloud.
+
+    ## Base URL
+    ```
+    https://api.noverfly.com/v1
+    ```
+
+    ## Authentication
+    All endpoints require a Bearer token (JWT) obtained via `/auth/login` or `/auth/register`.
+    Multi-tenant endpoints require the `X-Tenant-Id` header.
+
+    ## Rate Limits
+    - Free: 60 req/min, 1,000 req/day
+    - Pro: 300 req/min, 50,000 req/day
+    - Business: 1,000 req/min, 500,000 req/day
+
+    ## Links
+    - Website: [noverfly.com](https://noverfly.com)
+    - Help Center: [help.noverfly.com](https://help.noverfly.com)
+    - Documentation: [docs.noverfly.com](https://docs.noverfly.com)
+  version: 1.0.0
+  contact:
+    name: NoverFly Support
+    url: https://help.noverfly.com
+    email: support@noverfly.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  x-logo:
+    url: https://noverfly.com/logo.png
+
+servers:
+  - url: https://api.noverfly.com/v1
+    description: Production
+
+tags:
+  - name: Auth
+    description: Authentication, registration, JWT tokens, password reset
+  - name: Organizations
+    description: Multi-tenant organization management
+  - name: Sites
+    description: Website creation, management, and publishing
+  - name: CMS
+    description: Content Management System — collections and entries
+  - name: E-Commerce
+    description: Products, cart, checkout, orders, payments
+  - name: Assets
+    description: File uploads and media management
+  - name: Analytics
+    description: Traffic and performance analytics
+  - name: API Keys
+    description: Programmatic access tokens
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT access token from /auth/login or /auth/register
+    ApiKeyAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API Key
+      description: API key from /api-keys (prefix nf_sk_)
+
+  parameters:
+    TenantId:
+      name: X-Tenant-Id
+      in: header
+      required: true
+      schema:
+        type: string
+        example: org_xyz789
+      description: Organization (tenant) ID for multi-tenant data scoping
+    Page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        default: 1
+        minimum: 1
+      description: Page number for pagination
+    Limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        default: 25
+        minimum: 1
+        maximum: 100
+      description: Number of items per page
+    Sort:
+      name: sort
+      in: query
+      schema:
+        type: string
+        example: "-createdAt"
+      description: "Sort field. Prefix with - for descending (e.g. -createdAt)"
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          example: usr_abc123
+        email:
+          type: string
+          format: email
+          example: user@example.com
+        name:
+          type: string
+          example: John Doe
+        avatar:
+          type: string
+          format: uri
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+
+    AuthResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          properties:
+            user:
+              $ref: "#/components/schemas/User"
+            accessToken:
+              type: string
+              description: JWT access token (expires in 15 minutes)
+            refreshToken:
+              type: string
+              description: JWT refresh token (expires in 7 days, single-use)
+
+    Organization:
+      type: object
+      properties:
+        id:
+          type: string
+          example: org_xyz789
+        name:
+          type: string
+          example: My Company
+        slug:
+          type: string
+          example: my-company
+        logo:
+          type: string
+          format: uri
+          nullable: true
+        role:
+          type: string
+          enum: [owner, admin, editor, viewer]
+        createdAt:
+          type: string
+          format: date-time
+
+    Site:
+      type: object
+      properties:
+        id:
+          type: string
+          example: site_def456
+        name:
+          type: string
+          example: My Website
+        slug:
+          type: string
+          example: my-website
+        url:
+          type: string
+          format: uri
+          example: https://my-website.noverfly.com
+        customDomain:
+          type: string
+          nullable: true
+          example: www.example.com
+        status:
+          type: string
+          enum: [draft, published, archived]
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CmsEntry:
+      type: object
+      properties:
+        id:
+          type: string
+          example: entry_abc123
+        fields:
+          type: object
+          additionalProperties: true
+          example:
+            title: "Hello World"
+            slug: "hello-world"
+            body: "<p>Content here</p>"
+            published: true
+        status:
+          type: string
+          enum: [draft, published, archived]
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+          example: prod_abc123
+        name:
+          type: string
+          example: Classic T-Shirt
+        slug:
+          type: string
+          example: classic-t-shirt
+        price:
+          type: number
+          format: float
+          example: 29.99
+        compareAtPrice:
+          type: number
+          format: float
+          nullable: true
+          example: 39.99
+        currency:
+          type: string
+          example: USD
+        images:
+          type: array
+          items:
+            type: string
+            format: uri
+        variants:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              options:
+                type: object
+                additionalProperties:
+                  type: string
+              price:
+                type: number
+              inventory:
+                type: integer
+              sku:
+                type: string
+        status:
+          type: string
+          enum: [active, draft, archived]
+
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+          example: ord_xyz789
+        status:
+          type: string
+          enum: [pending, paid, processing, shipped, delivered, cancelled, refunded]
+        total:
+          type: number
+          format: float
+          example: 63.98
+        currency:
+          type: string
+          example: USD
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              productId:
+                type: string
+              variantId:
+                type: string
+              quantity:
+                type: integer
+              price:
+                type: number
+        shipping:
+          type: object
+          properties:
+            name:
+              type: string
+            address:
+              type: string
+            city:
+              type: string
+            country:
+              type: string
+            postalCode:
+              type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+        limit:
+          type: integer
+        total:
+          type: integer
+        totalPages:
+          type: integer
+
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              example: UNAUTHORIZED
+            message:
+              type: string
+              example: Missing or invalid authentication token
+
+security:
+  - BearerAuth: []
+
+paths:
+  # ─── AUTH ────────────────────────────────────────────
+  /auth/register:
+    post:
+      tags: [Auth]
+      summary: Create a new account
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password, name]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  minLength: 8
+                name:
+                  type: string
+      responses:
+        "201":
+          description: Account created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "409":
+          description: Email already registered
+
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Login with email and password
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "422":
+          description: Invalid credentials
+
+  /auth/me:
+    get:
+      tags: [Auth]
+      summary: Get current authenticated user
+      responses:
+        "200":
+          description: Current user profile
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: "#/components/schemas/User"
+    patch:
+      tags: [Auth]
+      summary: Update current user profile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                avatar:
+                  type: string
+                  format: uri
+      responses:
+        "200":
+          description: Profile updated
+
+  /auth/refresh:
+    post:
+      tags: [Auth]
+      summary: Refresh access token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [refreshToken]
+              properties:
+                refreshToken:
+                  type: string
+      responses:
+        "200":
+          description: New token pair
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                  refreshToken:
+                    type: string
+
+  /auth/logout:
+    post:
+      tags: [Auth]
+      summary: Logout and invalidate session
+      responses:
+        "200":
+          description: Logged out
+
+  /auth/forgot-password:
+    post:
+      tags: [Auth]
+      summary: Request password reset email
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        "200":
+          description: Reset email sent
+
+  /auth/reset-password:
+    post:
+      tags: [Auth]
+      summary: Reset password with token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token, password]
+              properties:
+                token:
+                  type: string
+                password:
+                  type: string
+                  minLength: 8
+      responses:
+        "200":
+          description: Password reset successful
+
+  /auth/google:
+    get:
+      tags: [Auth]
+      summary: Initiate Google OAuth 2.0 flow
+      security: []
+      responses:
+        "302":
+          description: Redirect to Google consent screen
+
+  # ─── ORGANIZATIONS ──────────────────────────────────
+  /organizations:
+    get:
+      tags: [Organizations]
+      summary: List user's organizations
+      responses:
+        "200":
+          description: List of organizations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Organization"
+    post:
+      tags: [Organizations]
+      summary: Create a new organization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name:
+                  type: string
+                logo:
+                  type: string
+                  format: uri
+      responses:
+        "201":
+          description: Organization created
+
+  /organizations/{orgId}:
+    parameters:
+      - name: orgId
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags: [Organizations]
+      summary: Get organization details
+      responses:
+        "200":
+          description: Organization details
+    patch:
+      tags: [Organizations]
+      summary: Update organization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                logo:
+                  type: string
+      responses:
+        "200":
+          description: Organization updated
+    delete:
+      tags: [Organizations]
+      summary: Delete organization (owner only)
+      responses:
+        "200":
+          description: Organization deleted
+
+  /organizations/{orgId}/members:
+    parameters:
+      - name: orgId
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags: [Organizations]
+      summary: List organization members
+      responses:
+        "200":
+          description: List of members
+    post:
+      tags: [Organizations]
+      summary: Invite a member
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, role]
+              properties:
+                email:
+                  type: string
+                  format: email
+                role:
+                  type: string
+                  enum: [admin, editor, viewer]
+      responses:
+        "201":
+          description: Invitation sent
+
+  # ─── SITES ──────────────────────────────────────────
+  /sites:
+    get:
+      tags: [Sites]
+      summary: List sites
+      parameters:
+        - $ref: "#/components/parameters/TenantId"
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: List of sites
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Site"
+                  pagination:
+                    $ref: "#/components/schemas/Pagination"
+    post:
+      tags: [Sites]
+      summary: Create a new site
+      parameters:
+        - $ref: "#/components/parameters/TenantId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name:
+                  type: string
+                template:
+                  type: string
+                  description: Template slug (blank if omitted)
+      responses:
+        "201":
+          description: Site created
+
+  /sites/{siteId}:
+    parameters:
+      - name: siteId
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: "#/components/parameters/TenantId"
+    get:
+      tags: [Sites]
+      summary: Get site details
+      responses:
+        "200":
+          description: Site details
+    patch:
+      tags: [Sites]
+      summary: Update site
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                customDomain:
+                  type: string
+      responses:
+        "200":
+          description: Site updated
+    delete:
+      tags: [Sites]
+      summary: Delete site
+      responses:
+        "200":
+          description: Site deleted
+
+  /sites/{siteId}/publish:
+    post:
+      tags: [Sites]
+      summary: Publish site to production
+      parameters:
+        - name: siteId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/TenantId"
+      responses:
+        "200":
+          description: Deployment initiated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      deployId:
+                        type: string
+                      status:
+                        type: string
+                        enum: [queued, building, deploying, live, failed]
+                      url:
+                        type: string
+                        format: uri
+
+  # ─── CMS ────────────────────────────────────────────
+  /cms/collections:
+    get:
+      tags: [CMS]
+      summary: List CMS collections
+      parameters:
+        - $ref: "#/components/parameters/TenantId"
+      responses:
+        "200":
+          description: List of collections
+    post:
+      tags: [CMS]
+      summary: Create a collection
+      parameters:
+        - $ref: "#/components/parameters/TenantId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, fields]
+              properties:
+                name:
+                  type: string
+                  example: Blog Posts
+                fields:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      type:
+                        type: string
+                        enum: [text, longText, richText, number, boolean, date, image, file, select, multiSelect, color, url, email, reference, json]
+                      required:
+                        type: boolean
+      responses:
+        "201":
+          description: Collection created
+
+  /cms/{collectionSlug}/entries:
+    parameters:
+      - name: collectionSlug
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: "#/components/parameters/TenantId"
+    get:
+      tags: [CMS]
+      summary: List entries in a collection
+      parameters:
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Sort"
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [draft, published, archived]
+      responses:
+        "200":
+          description: Paginated list of entries
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/CmsEntry"
+                  pagination:
+                    $ref: "#/components/schemas/Pagination"
+    post:
+      tags: [CMS]
+      summary: Create a new entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [fields]
+              properties:
+                fields:
+                  type: object
+                  additionalProperties: true
+      responses:
+        "201":
+          description: Entry created
+
+  /cms/{collectionSlug}/entries/{entryId}:
+    parameters:
+      - name: collectionSlug
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: entryId
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: "#/components/parameters/TenantId"
+    get:
+      tags: [CMS]
+      summary: Get a single entry
+      responses:
+        "200":
+          description: Entry details
+    patch:
+      tags: [CMS]
+      summary: Update an entry
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fields:
+                  type: object
+                  additionalProperties: true
+      responses:
+        "200":
+          description: Entry updated
+    delete:
+      tags: [CMS]
+      summary: Delete an entry
+      responses:
+        "200":
+          description: Entry deleted
+
+  # ─── E-COMMERCE ─────────────────────────────────────
+  /ecommerce/products:
+    get:
+      tags: [E-Commerce]
+      summary: List products
+      parameters:
+        - $ref: "#/components/parameters/TenantId"
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: List of products
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Product"
+                  pagination:
+                    $ref: "#/components/schemas/Pagination"
+    post:
+      tags: [E-Commerce]
+      summary: Create a product
+      parameters:
+        - $ref: "#/components/parameters/TenantId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, price]
+              properties:
+                name:
+                  type: string
+                slug:
+                  type: string
+                description:
+                  type: string
+                price:
+                  type: number
+                images:
+                  type: array
+                  items:
+                    type: string
+                    format: uri
+      responses:
+        "201":
+          description: Product created
+
+  /ecommerce/products/{productId}:
+    parameters:
+      - name: productId
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: "#/components/parameters/TenantId"
+    get:
+      tags: [E-Commerce]
+      summary: Get product details
+      responses:
+        "200":
+          description: Product details
+    patch:
+      tags: [E-Commerce]
+      summary: Update product
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                price:
+                  type: number
+                status:
+                  type: string
+                  enum: [active, draft, archived]
+      responses:
+        "200":
+          description: Product updated
+    delete:
+      tags: [E-Commerce]
+      summary: Delete product
+      responses:
+        "200":
+          description: Product deleted
+
+  /ecommerce/checkout:
+    post:
+      tags: [E-Commerce]
+      summary: Initiate checkout
+      parameters:
+        - $ref: "#/components/parameters/TenantId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [items, shipping, paymentMethod]
+              properties:
+                items:
+                  type: array
+                  items:
+                    type: object
+                    required: [productId, quantity]
+                    properties:
+                      productId:
+                        type: string
+                      variantId:
+                        type: string
+                      quantity:
+                        type: integer
+                        minimum: 1
+                shipping:
+                  type: object
+                  required: [name, address, city, country, postalCode]
+                  properties:
+                    name:
+                      type: string
+                    address:
+                      type: string
+                    city:
+                      type: string
+                    country:
+                      type: string
+                    postalCode:
+                      type: string
+                paymentMethod:
+                  type: string
+                  enum: [stripe, paypal]
+                discountCode:
+                  type: string
+      responses:
+        "200":
+          description: Checkout session created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  orderId:
+                    type: string
+                  checkoutUrl:
+                    type: string
+                    format: uri
+                  total:
+                    type: number
+                  currency:
+                    type: string
+
+  /ecommerce/orders:
+    get:
+      tags: [E-Commerce]
+      summary: List orders
+      parameters:
+        - $ref: "#/components/parameters/TenantId"
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/Limit"
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending, paid, processing, shipped, delivered, cancelled, refunded]
+      responses:
+        "200":
+          description: List of orders
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Order"
+                  pagination:
+                    $ref: "#/components/schemas/Pagination"
+
+  /ecommerce/orders/{orderId}:
+    parameters:
+      - name: orderId
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: "#/components/parameters/TenantId"
+    get:
+      tags: [E-Commerce]
+      summary: Get order details
+      responses:
+        "200":
+          description: Order details
+    patch:
+      tags: [E-Commerce]
+      summary: Update order status
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [processing, shipped, delivered, cancelled]
+                trackingNumber:
+                  type: string
+                trackingUrl:
+                  type: string
+                  format: uri
+      responses:
+        "200":
+          description: Order updated
+
+  # ─── ASSETS ─────────────────────────────────────────
+  /assets:
+    get:
+      tags: [Assets]
+      summary: List uploaded assets
+      parameters:
+        - $ref: "#/components/parameters/TenantId"
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: List of assets
+
+  /assets/upload:
+    post:
+      tags: [Assets]
+      summary: Upload a file
+      parameters:
+        - $ref: "#/components/parameters/TenantId"
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
+                folder:
+                  type: string
+                  description: Optional subfolder path
+      responses:
+        "201":
+          description: File uploaded
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  url:
+                    type: string
+                    format: uri
+                  filename:
+                    type: string
+                  size:
+                    type: integer
+                  mimeType:
+                    type: string
+
+  /assets/{assetId}:
+    parameters:
+      - name: assetId
+        in: path
+        required: true
+        schema:
+          type: string
+    delete:
+      tags: [Assets]
+      summary: Delete an asset
+      responses:
+        "200":
+          description: Asset deleted
+
+  # ─── ANALYTICS ──────────────────────────────────────
+  /analytics/overview:
+    get:
+      tags: [Analytics]
+      summary: Dashboard overview metrics
+      parameters:
+        - $ref: "#/components/parameters/TenantId"
+        - name: period
+          in: query
+          schema:
+            type: string
+            enum: [7d, 30d, 90d, 12m]
+            default: 30d
+      responses:
+        "200":
+          description: Analytics overview
+
+  /analytics/pageviews:
+    get:
+      tags: [Analytics]
+      summary: Page view statistics
+      parameters:
+        - $ref: "#/components/parameters/TenantId"
+        - name: siteId
+          in: query
+          schema:
+            type: string
+        - name: period
+          in: query
+          schema:
+            type: string
+            enum: [7d, 30d, 90d, 12m]
+      responses:
+        "200":
+          description: Page view data
+
+  # ─── API KEYS ───────────────────────────────────────
+  /api-keys:
+    get:
+      tags: [API Keys]
+      summary: List API keys
+      responses:
+        "200":
+          description: List of API keys
+    post:
+      tags: [API Keys]
+      summary: Create an API key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name:
+                  type: string
+                  example: My Integration
+                scopes:
+                  type: array
+                  items:
+                    type: string
+                    enum: ["sites:read", "sites:write", "cms:read", "cms:write", "ecommerce:read", "ecommerce:write", "assets:read", "assets:write", "analytics:read"]
+      responses:
+        "201":
+          description: API key created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  apiKey:
+                    type: string
+                    example: nf_sk_live_abc123...
+                  name:
+                    type: string
+                  scopes:
+                    type: array
+                    items:
+                      type: string
+
+  /api-keys/{keyId}:
+    delete:
+      tags: [API Keys]
+      summary: Revoke an API key
+      parameters:
+        - name: keyId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: API key revoked
