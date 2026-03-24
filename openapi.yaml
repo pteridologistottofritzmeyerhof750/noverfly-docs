@@ -3,7 +3,7 @@ info:
   title: NoverFly API
   description: |
     Official REST API for the **NoverFly** platform — an all-in-one SaaS website builder,
-    CMS, e-commerce, Backend as a Service (BaaS), and AI-powered design platform by Gloowflix Cloud.
+    application builder, CMS, e-commerce, Backend as a Service (BaaS), and AI-powered design platform by Gloowflix Cloud.
 
     ## Base URL
     ```
@@ -45,6 +45,8 @@ tags:
     description: Multi-tenant organization management
   - name: Sites
     description: Website creation, management, and publishing
+  - name: Applications
+    description: "Full-stack web application builder — build, deploy, and manage web apps"
   - name: CMS
     description: Content Management System — collections and entries
   - name: Database
@@ -756,6 +758,160 @@ paths:
                       url:
                         type: string
                         format: uri
+
+  # ─── APPLICATIONS ────────────────────────────────────
+  /apps:
+    get:
+      tags: [Applications]
+      summary: List applications
+      parameters:
+        - $ref: "#/components/parameters/TenantId"
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: List of applications
+    post:
+      tags: [Applications]
+      summary: Create a new application
+      parameters:
+        - $ref: "#/components/parameters/TenantId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name:
+                  type: string
+                template:
+                  type: string
+                  description: "App template (dashboard, crm, portal, saas, blank)"
+                type:
+                  type: string
+                  enum: [fullstack, spa, api-only]
+      responses:
+        "201":
+          description: Application created
+
+  /apps/{appId}:
+    parameters:
+      - name: appId
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: "#/components/parameters/TenantId"
+    get:
+      tags: [Applications]
+      summary: Get application details
+      responses:
+        "200":
+          description: Application details
+    patch:
+      tags: [Applications]
+      summary: Update application
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                settings:
+                  type: object
+      responses:
+        "200":
+          description: Application updated
+    delete:
+      tags: [Applications]
+      summary: Delete application
+      responses:
+        "200":
+          description: Application deleted
+
+  /apps/{appId}/build:
+    post:
+      tags: [Applications]
+      summary: Build the application
+      parameters:
+        - name: appId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/TenantId"
+      responses:
+        "200":
+          description: Build started
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      buildId:
+                        type: string
+                      status:
+                        type: string
+                        enum: [queued, building, success, failed]
+
+  /apps/{appId}/deploy:
+    post:
+      tags: [Applications]
+      summary: Deploy application to production
+      parameters:
+        - name: appId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/TenantId"
+      responses:
+        "200":
+          description: Deployment initiated
+
+  /apps/{appId}/builds:
+    get:
+      tags: [Applications]
+      summary: List build history
+      parameters:
+        - name: appId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/TenantId"
+      responses:
+        "200":
+          description: Build history
+
+  /apps/{appId}/rollback/{buildId}:
+    post:
+      tags: [Applications]
+      summary: Rollback to a previous build
+      parameters:
+        - name: appId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: buildId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/TenantId"
+      responses:
+        "200":
+          description: Rollback initiated
 
   # ─── CMS ────────────────────────────────────────────
   /cms/collections:

@@ -129,6 +129,20 @@ All responses follow a consistent structure:
 | `PATCH` | `/sites/:id/pages/:pageId` | Update page |
 | `DELETE` | `/sites/:id/pages/:pageId` | Delete page |
 
+### Applications
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/apps` | List applications |
+| `POST` | `/apps` | Create application |
+| `GET` | `/apps/:id` | Get application details |
+| `PATCH` | `/apps/:id` | Update application |
+| `DELETE` | `/apps/:id` | Delete application |
+| `POST` | `/apps/:id/build` | Build the application |
+| `POST` | `/apps/:id/deploy` | Deploy to production |
+| `GET` | `/apps/:id/builds` | List build history |
+| `POST` | `/apps/:id/rollback/:buildId` | Rollback to previous build |
+
 ### CMS
 
 | Method | Endpoint | Description |

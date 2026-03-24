@@ -1,7 +1,7 @@
 # NoverFly API Documentation
 
 > **Official developer documentation for the [NoverFly](https://noverfly.com) platform API.**
-> Build websites, sell products, manage content, use a cloud database (BaaS), and integrate AI — all through one REST API.
+> Build websites, web applications, sell products, manage content, use a cloud database (BaaS), and integrate AI — all through one REST API.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Website](https://img.shields.io/badge/Website-noverfly.com-brightgreen)](https://noverfly.com)
@@ -13,9 +13,10 @@
 
 ## What is NoverFly?
 
-**NoverFly** is an all-in-one **SaaS website builder**, **e-commerce platform**, and **Backend as a Service (BaaS)** — like Webflow + Shopify + Firebase combined. NoverFly provides a REST API for developers to programmatically manage every aspect of the platform:
+**NoverFly** is an all-in-one **SaaS website & application builder**, **e-commerce platform**, and **Backend as a Service (BaaS)** — like Webflow + Shopify + Firebase combined. NoverFly provides a REST API for developers to programmatically manage every aspect of the platform:
 
-- **Website Builder API** — Create and manage sites, pages, and designs
+- **Website & App Builder API** — Create and manage sites, web apps, pages, and designs
+- **Application API** — Build full-stack web applications with frontend + backend + database
 - **CMS API** — Collections, entries, dynamic content
 - **Database API (BaaS)** — Cloud PostgreSQL, tables, queries, real-time data, row-level security
 - **E-Commerce API** — Products, cart, checkout, orders, payments (Stripe & PayPal)
@@ -29,15 +30,16 @@
 
 NoverFly is built for:
 
-- **Creators & freelancers** — Build client sites fast with GlowDesign visual editor
-- **Businesses** — Launch online stores with built-in e-commerce and payments
-- **Developers** — Integrate via REST API, webhooks, and API keys
+- **Creators & freelancers** — Build client sites and apps fast with GlowDesign visual editor
+- **Businesses** — Launch online stores and web applications with built-in e-commerce and payments
+- **Developers** — Build full-stack applications via REST API, BaaS, webhooks, and API keys
 - **Agencies** — Manage multiple client projects with multi-tenant organizations
-- **SaaS builders** — White-label websites and storefronts
+- **SaaS builders** — White-label websites, storefronts, and custom web applications
+- **Startups** — Ship MVPs fast with built-in auth, database, hosting, and payments
 
 ### Keywords
 
-`NoverFly` · `NoverFly API` · `website builder API` · `SaaS platform` · `e-commerce API` · `BaaS` · `Backend as a Service` · `cloud database` · `GlowDesign` · `CMS API` · `Gloowflix Cloud` · `drag-and-drop website builder` · `headless CMS` · `REST API` · `multi-tenant SaaS` · `PostgreSQL` · `database API`
+`NoverFly` · `NoverFly API` · `website builder API` · `application builder` · `build web app` · `SaaS platform` · `e-commerce API` · `BaaS` · `Backend as a Service` · `cloud database` · `GlowDesign` · `CMS API` · `Gloowflix Cloud` · `drag-and-drop website builder` · `headless CMS` · `REST API` · `multi-tenant SaaS` · `PostgreSQL` · `database API` · `full-stack platform` · `no-code app builder`
 
 ---
 
@@ -103,6 +105,7 @@ curl https://api.noverfly.com/v1/ecommerce/products \
 | [Getting Started](docs/getting-started.md) | Step-by-step tutorial: sign up → create site → publish |
 | [Authentication](docs/authentication.md) | JWT tokens, Google OAuth, API keys, roles, multi-tenant auth |
 | [GlowDesign Editor](docs/glowdesign.md) | Visual drag-and-drop editor, components, responsive design |
+| [Build Applications](docs/applications.md) | Full-stack web apps: frontend + backend + database + deploy |
 | [CMS & Database](docs/cms.md) | Collections, custom fields, entries, CMS API, webhooks |
 | [Database & BaaS](docs/database.md) | Cloud PostgreSQL, tables, queries, real-time subscriptions, row-level security |
 | [E-Commerce](docs/ecommerce.md) | Products, variants, cart, checkout, orders, Stripe/PayPal |
@@ -121,7 +124,8 @@ Base URL: `https://api.noverfly.com/v1`
 |----------|-----------|-------------|
 | **Auth** | `POST /auth/login` · `POST /auth/register` · `GET /auth/me` · `POST /auth/refresh` | Authentication, registration, JWT tokens |
 | **Organizations** | `GET /organizations` · `POST /organizations` · `POST /organizations/:id/members` | Multi-tenant team management |
-| **Sites** | `GET /sites` · `POST /sites` · `POST /sites/:id/publish` | Website creation and publishing |
+| **Sites** | `GET /sites` · `POST /sites` · `POST /sites/:id/publish` | Website and app creation, publishing |
+| **Applications** | `GET /apps` · `POST /apps` · `POST /apps/:id/build` · `POST /apps/:id/deploy` | Full-stack web application lifecycle |
 | **CMS** | `GET /cms/:collection/entries` · `POST /cms/:collection/entries` | Dynamic content management |
 | **Database (BaaS)** | `GET /database/tables` · `POST /database/query` · `POST /database/tables/:table/rows` | Cloud database, queries, real-time |
 | **E-Commerce** | `GET /ecommerce/products` · `POST /ecommerce/checkout` · `GET /ecommerce/orders` | Products, checkout, orders |

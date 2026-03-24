@@ -1,6 +1,6 @@
 # Introduction to NoverFly
 
-NoverFly is a **cloud-native SaaS platform** that brings together website building, content management, e-commerce, a cloud database (BaaS), and AI-powered tools into one seamless experience.
+NoverFly is a **cloud-native SaaS platform** that brings together website building, application development, content management, e-commerce, a cloud database (BaaS), and AI-powered tools into one seamless experience.
 
 ---
 
@@ -8,6 +8,7 @@ NoverFly is a **cloud-native SaaS platform** that brings together website buildi
 
 Building an online presence typically requires juggling multiple tools:
 - A website builder (Webflow, Wix)
+- An application builder (Bubble, Retool)
 - An e-commerce platform (Shopify, WooCommerce)
 - A CMS (Contentful, Strapi)
 - A backend database / BaaS (Firebase, Supabase)
@@ -21,7 +22,10 @@ Building an online presence typically requires juggling multiple tools:
 ## Core Features
 
 ### 🎨 GlowDesign Lite — Visual Editor
-A powerful drag-and-drop editor that lets you design pixel-perfect websites without writing code. Supports responsive design, component systems, custom CSS, and real-time preview.
+A powerful drag-and-drop editor that lets you design pixel-perfect websites and web applications without writing code. Supports responsive design, component systems, custom CSS, and real-time preview.
+
+### 🚀 Build Applications
+Build complete **full-stack web applications** — dashboards, admin panels, SaaS products, CRMs, client portals — with a visual frontend, cloud backend (BaaS), database, built-in authentication, and one-click deployment. No server management needed.
 
 ### 🧩 CMS & Dynamic Content
 Structure your content with collections, custom fields, and relationships. Manage blog posts, products, team members, FAQs — anything you need.
@@ -82,6 +86,7 @@ NoverFly uses a **shared-database, tenant-isolated** architecture:
 ## What's Next?
 
 - [Getting Started](getting-started.md) — Create your first project
+- [Build Applications](applications.md) — Create full-stack web apps
 - [Authentication](authentication.md) — Understand the auth system
 - [Database & BaaS](database.md) — Cloud database and REST API
 - [API Reference](api.md) — Explore the REST API
