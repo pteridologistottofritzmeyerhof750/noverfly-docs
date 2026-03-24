@@ -1,34 +1,56 @@
 # API Reference
 
-NoverFly provides a **RESTful API** for programmatic access to all platform features.
+NoverFly provides **two RESTful APIs** for programmatic access to all platform features.
 
 ---
 
-## Base URL
+## API Endpoints
 
-```
-https://api.noverfly.com/v1
-```
-
-All API endpoints are versioned under `/v1`.
+| API | Base URL | Purpose |
+|-----|----------|--------|
+| **NoverFly API** | `https://api.noverfly.com/v1` | Main platform — auth, sites, apps, CMS, database, e-commerce, analytics |
+| **GFK Storage API** | `https://gfk.noverfly.com` | Assets & media — file upload, image processing, storage |
 
 ---
 
 ## Authentication
 
-Every API request requires authentication via Bearer token:
+NoverFly supports **3 authentication methods**:
+
+### Option 1 — JWT Bearer Token
 
 ```http
 Authorization: Bearer YOUR_ACCESS_TOKEN
 ```
 
-For multi-tenant operations, include the tenant header:
+### Option 2 — API Key + Secret Key
+
+Generate from your **account dashboard** → Settings → API Keys.
+
+```http
+X-API-Key: nf_pk_live_abc123...
+X-API-Secret: nf_sk_live_xyz789...
+```
+
+**Key format:**
+| Key | Prefix | Visibility |
+|-----|--------|------------|
+| API Key (public) | `nf_pk_live_` | Safe to use in server code |
+| Secret Key (private) | `nf_sk_live_` | **Never expose in frontend / client code** |
+
+### Option 3 — Google OAuth 2.0
+
+```http
+GET /v1/auth/google
+```
+
+For multi-tenant operations, always include:
 
 ```http
 X-Tenant-Id: YOUR_TENANT_ID
 ```
 
-See [Authentication](authentication.md) for details on obtaining tokens.
+See [Authentication](authentication.md) for full details.
 
 ---
 
@@ -188,7 +210,9 @@ All responses follow a consistent structure:
 | `GET` | `/ecommerce/orders/:id` | Get order details |
 | `PATCH` | `/ecommerce/orders/:id` | Update order status |
 
-### Assets
+### Assets (GFK Storage API)
+
+> **Base URL:** `https://gfk.noverfly.com` — Assets use the **separate GFK (Gloowflix) Storage API**, not the main NoverFly API.
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -196,6 +220,19 @@ All responses follow a consistent structure:
 | `POST` | `/assets/upload` | Upload file |
 | `GET` | `/assets/:id` | Get asset details |
 | `DELETE` | `/assets/:id` | Delete asset |
+| `GET` | `/assets/:id/download` | Download file |
+| `POST` | `/assets/:id/transform` | Transform image (resize, crop, format) |
+
+**Authentication:** Use JWT Bearer token or API Key + Secret Key (same credentials as the main API).
+
+```bash
+# Upload a file to GFK Storage API
+curl -X POST https://gfk.noverfly.com/assets/upload \
+  -H "X-API-Key: nf_pk_live_abc123..." \
+  -H "X-API-Secret: nf_sk_live_xyz789..." \
+  -H "X-Tenant-Id: YOUR_TENANT_ID" \
+  -F "file=@image.png"
+```
 
 ### API Keys
 

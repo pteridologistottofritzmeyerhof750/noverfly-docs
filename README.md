@@ -1,7 +1,7 @@
 # NoverFly API Documentation
 
 > **Official developer documentation for the [NoverFly](https://noverfly.com) platform API.**
-> Build websites, web applications, sell products, manage content, use a cloud database (BaaS), and integrate AI — all through one REST API.
+> Build websites, web applications, sell products, manage content, use a cloud database (BaaS), and integrate AI — through **two REST APIs**.
 
 ![API](https://img.shields.io/badge/API-v1-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
@@ -11,6 +11,7 @@
 ![Redis](https://img.shields.io/badge/cache-Redis%207-DC382D?logo=redis)
 [![Website](https://img.shields.io/badge/Website-noverfly.com-brightgreen)](https://noverfly.com)
 [![API Base URL](https://img.shields.io/badge/API-api.noverfly.com%2Fv1-orange)](https://api.noverfly.com/v1)
+[![GFK Storage](https://img.shields.io/badge/Storage-gfk.noverfly.com-blueviolet)](https://gfk.noverfly.com)
 [![OpenAPI](https://img.shields.io/badge/OpenAPI-3.0-6BA539?logo=openapi-initiative)](openapi.yaml)
 [![Help Center](https://img.shields.io/badge/Help-help.noverfly.com-lightblue)](https://help.noverfly.com)
 
@@ -42,13 +43,67 @@
 - **CMS API** — Collections, entries, dynamic content
 - **Database API (BaaS)** — Cloud PostgreSQL, tables, queries, real-time data, row-level security
 - **E-Commerce API** — Products, cart, checkout, orders, payments (Stripe & PayPal)
-- **Authentication API** — JWT, OAuth 2.0 (Google), API keys, multi-tenant
+- **Authentication API** — JWT, OAuth 2.0 (Google), API Key + Secret Key, multi-tenant
 - **AI API** — Content generation, design assistance, image generation
 - **Analytics API** — Page views, visitors, conversions
-- **Asset API** — File uploads, media management (S3 storage)
+- **Asset API** ⚡ — File uploads, media management (**separate GFK Storage API**)
 - **Deployment API** — Publish sites, custom domains, SSL
 
-**API Base URL:** `https://api.noverfly.com/v1`
+---
+
+## Two APIs
+
+NoverFly exposes **two independent REST APIs**:
+
+| API | Base URL | Purpose |
+|-----|----------|ﾭ--------|
+| **NoverFly API** | `https://api.noverfly.com/v1` | Main platform — auth, sites, apps, CMS, database, e-commerce, analytics, API keys |
+| **GFK Storage API** | `https://gfk.noverfly.com` | Assets & media — file upload, image processing, storage management |
+
+### Why two APIs?
+
+Assets (images, videos, documents) are handled by a **dedicated GFK (Gloowflix) storage service** for performance:
+- Optimized for large file uploads and downloads
+- Independent scaling from the main API
+- CDN-backed delivery for fast global access
+- Separate rate limits (not counted against your main API quota)
+
+### Authentication on both APIs
+
+| Method | NoverFly API | GFK Storage API |
+|--------|-------------|----------------|
+| JWT Bearer Token | ✅ | ✅ |
+| API Key + Secret Key | ✅ | ✅ |
+| Google OAuth | ✅ | ❌ |
+
+---
+
+## Authentication Methods
+
+NoverFly supports **3 authentication methods**:
+
+### 1. JWT Token (Email + Password)
+```bash
+curl -X POST https://api.noverfly.com/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email": "you@example.com", "password": "your-password"}'
+```
+
+### 2. API Key + Secret Key
+Generate from your **account dashboard** → Settings → API Keys.
+```bash
+curl https://api.noverfly.com/v1/sites \
+  -H "X-API-Key: nf_pk_live_abc123..." \
+  -H "X-API-Secret: nf_sk_live_xyz789..." \
+  -H "X-Tenant-Id: YOUR_TENANT_ID"
+```
+
+### 3. Google OAuth 2.0
+```
+GET https://api.noverfly.com/v1/auth/google
+```
+
+> See [Authentication](docs/authentication.md) for complete details.
 
 NoverFly is built for:
 
@@ -151,7 +206,7 @@ Base URL: `https://api.noverfly.com/v1`
 | **CMS** | `GET /cms/:collection/entries` · `POST /cms/:collection/entries` | Dynamic content management |
 | **Database (BaaS)** | `GET /database/tables` · `POST /database/query` · `POST /database/tables/:table/rows` | Cloud database, queries, real-time |
 | **E-Commerce** | `GET /ecommerce/products` · `POST /ecommerce/checkout` · `GET /ecommerce/orders` | Products, checkout, orders |
-| **Assets** | `POST /assets/upload` · `GET /assets` | File uploads and media |
+| **Assets** | `POST /assets/upload` · `GET /assets` | File uploads and media **(GFK Storage API)** |
 | **Analytics** | `GET /analytics/overview` · `GET /analytics/pageviews` | Traffic and performance |
 | **API Keys** | `POST /api-keys` · `GET /api-keys` | Programmatic access tokens |
 
@@ -161,12 +216,19 @@ Base URL: `https://api.noverfly.com/v1`
 
 ## Authentication
 
-NoverFly uses **JWT authentication** and supports:
+NoverFly supports **3 authentication methods**:
 
-- Email + password registration
-- Google OAuth 2.0
-- Session management with refresh tokens
-- Multi-tenant organization switching
+| Method | How to get it | Use case |
+|--------|--------------|----------|
+| **JWT Token** | `POST /auth/login` with email + password | Web app sessions, dashboard |
+| **API Key + Secret Key** | Account dashboard → Settings → API Keys | Server-to-server, CI/CD, integrations |
+| **Google OAuth 2.0** | `GET /auth/google` | One-click sign-in |
+
+**API Key format:**
+- **API Key (public):** `nf_pk_live_abc123...` — identifies your account
+- **Secret Key (private):** `nf_sk_live_xyz789...` — authenticates requests (never expose in frontend code)
+
+Both keys are generated from your **account dashboard** under **Settings → API Keys**.
 
 ---
 

@@ -237,9 +237,55 @@ Content-Type: application/json
 
 ---
 
-## API Keys
+## API Keys (API Key + Secret Key)
 
-For programmatic access (CI/CD, integrations), generate API keys:
+For programmatic access (CI/CD, integrations, server-to-server), generate an **API Key + Secret Key pair** from your account dashboard.
+
+### Generate Keys
+
+Go to **Account Dashboard → Settings → API Keys** and click **"Create API Key"**.
+
+You will receive:
+
+| Key | Format | Purpose |
+|-----|--------|--------|
+| **API Key** (public) | `nf_pk_live_abc123...` | Identifies your account |
+| **Secret Key** (private) | `nf_sk_live_xyz789...` | Authenticates requests |
+
+> ⚠️ **The Secret Key is shown only once.** Save it securely. If lost, revoke and create a new pair.
+
+### Using API Key + Secret Key
+
+Send both keys as headers:
+
+```http
+GET /v1/sites
+X-API-Key: nf_pk_live_abc123...
+X-API-Secret: nf_sk_live_xyz789...
+X-Tenant-Id: org_xyz789
+```
+
+**cURL example:**
+```bash
+curl https://api.noverfly.com/v1/sites \
+  -H "X-API-Key: nf_pk_live_abc123..." \
+  -H "X-API-Secret: nf_sk_live_xyz789..." \
+  -H "X-Tenant-Id: org_xyz789"
+```
+
+### API Key + Secret also works on GFK Storage API
+
+```bash
+curl -X POST https://gfk.noverfly.com/assets/upload \
+  -H "X-API-Key: nf_pk_live_abc123..." \
+  -H "X-API-Secret: nf_sk_live_xyz789..." \
+  -H "X-Tenant-Id: org_xyz789" \
+  -F "file=@photo.jpg"
+```
+
+### Scoped API Keys
+
+You can also create API keys with specific permission scopes:
 
 ```http
 POST /v1/api-keys
@@ -255,17 +301,28 @@ Content-Type: application/json
 **Response:**
 ```json
 {
-  "apiKey": "nf_sk_live_abc123...",
+  "apiKey": "nf_pk_live_abc123...",
+  "secretKey": "nf_sk_live_xyz789...",
   "name": "My Integration",
   "scopes": ["sites:read", "sites:write", "cms:read"],
   "createdAt": "2025-01-15T10:00:00Z"
 }
 ```
 
-Use the API key as a Bearer token:
+> ⚠️ The `secretKey` is returned **only once** in this response. Store it immediately.
+
+Use the API Key + Secret Key as headers:
 ```http
 GET /v1/sites
-Authorization: Bearer nf_sk_live_abc123...
+X-API-Key: nf_pk_live_abc123...
+X-API-Secret: nf_sk_live_xyz789...
+X-Tenant-Id: org_xyz789
+```
+
+Or you can use just the API Key as Bearer token (for backward compatibility):
+```http
+GET /v1/sites
+Authorization: Bearer nf_pk_live_abc123...
 X-Tenant-Id: org_xyz789
 ```
 

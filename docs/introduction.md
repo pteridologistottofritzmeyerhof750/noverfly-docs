@@ -1,6 +1,11 @@
 # Introduction to NoverFly
 
-NoverFly is a **cloud-native SaaS platform** that brings together website building, application development, content management, e-commerce, a cloud database (BaaS), and AI-powered tools into one seamless experience.
+NoverFly is a **cloud-native SaaS platform** that brings together website building, application development, content management, e-commerce, a cloud database (BaaS), and AI-powered tools into one seamless experience — exposed through **two REST APIs**.
+
+| API | Base URL | Purpose |
+|-----|----------|--------|
+| **NoverFly API** | `https://api.noverfly.com/v1` | Main platform — auth, sites, apps, CMS, database, e-commerce, analytics |
+| **GFK Storage API** | `https://gfk.noverfly.com` | Assets & media — file upload, image processing, storage |
 
 ---
 
